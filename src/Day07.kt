@@ -43,51 +43,29 @@ fun parseHands(
     handWithKey: Map.Entry<Int, List<Pair<String, String>>>,
     handsWithTypes: MutableList<Hand>
 ) {
-    when {
-        handWithKey.key.isHighCard() -> handWithKey.value.forEach { handPair ->
-            handsWithTypes.add(
-                buildHand(
-                    handPair,
-                    HighCard
-                )
-            )
-        }
-
-        handWithKey.key.isOnePair() -> handWithKey.value.forEach { handPair ->
-            handsWithTypes.add(
-                buildHand(
-                    handPair,
-                    OnePair
-                )
-            )
-        }
-
-        handWithKey.key.isFiveOfAKind() -> handWithKey.value.forEach { handPair ->
-            handsWithTypes.add(
-                buildHand(handPair, FiveOfAKind)
-            )
-        }
-
-        else -> {
-            handWithKey.value.forEach { handPair ->
-                val countMap = handPair.first.groupingBy { ch -> ch }
+    handWithKey.value.forEach { handPair ->
+        val handType = when {
+            handWithKey.key.isHighCard() -> HighCard
+            handWithKey.key.isOnePair() -> OnePair
+            handWithKey.key.isFiveOfAKind() -> FiveOfAKind
+            else -> {
+                val countMap = handPair.first.groupingBy { it }
                     .eachCount()
                     .toList()
                     .sortedByDescending { it.second }
 
-                val type: HandValue = when (countMap.first().second) {
+                when (countMap.first().second) {
                     4 -> FourOfAKind
                     3 -> if (countMap.last().second == 2) FullHouse else ThreeOfAKind
                     else -> TwoPairs
                 }
-
-                handsWithTypes.add(
-                    buildHand(handPair, type)
-                )
             }
         }
+
+        handsWithTypes.add(buildHand(handPair, handType))
     }
 }
+
 
 // Calculate total winnings
 fun calculateWinnings(input: List<Hand>): Int {
