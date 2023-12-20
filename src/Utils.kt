@@ -19,3 +19,27 @@ fun String.md5() = BigInteger(1, MessageDigest.getInstance("MD5").digest(toByteA
  * The cleaner shorthand for printing output.
  */
 fun Any?.println() = println(this)
+
+fun createPlayingFieldMatrix(input: List<String>): List<List<Char>> = input.map { it.toList() }
+
+fun getNeighborsAroundPosition(
+    position: Pair<Int, Int>
+): List<Pair<Int, Int>> {
+
+    val neighbors = mutableListOf<Pair<Int, Int>>()
+
+    val directions = listOf(
+        Pair(0, -1), // left
+        Pair(-1, 0), // top
+        Pair(0, 1), // right
+        Pair(1, 0) // bottom
+    )
+
+    for ((x, y) in directions) {
+        val newRow = position.first + x
+        val newColumn = position.second + y
+
+        neighbors.add(Pair(newRow, newColumn))
+    }
+    return neighbors
+}

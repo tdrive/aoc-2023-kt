@@ -57,6 +57,7 @@ fun main() {
     part1(input).println()
     //part2(input).println()
 }
+
 fun getShapeFromPosition(
     leftPipePosition: Pair<Int, Int>,
     fieldMatrix: List<List<Char>>
@@ -65,29 +66,18 @@ fun getShapeFromPosition(
 } catch (e: IndexOutOfBoundsException) {
     null
 }
+
 fun getPipesAroundPosition(
     position: Pair<Int, Int>,
     fieldMatrix: List<List<Char>>
-): List<Pipe?> {
-
-    val leftPipePosition = position.first to position.second - 1
-    val topPipePosition = position.first - 1 to position.second
-    val rightPipePosition = position.first to position.second + 1
-    val bottomPipePosition = position.first + 1 to position.second
-    val positionsAround =
-        listOf(leftPipePosition, topPipePosition, rightPipePosition, bottomPipePosition)
-
-    return positionsAround.map {
-        getShapeFromPosition(it, fieldMatrix).let { shape ->
-            if (shape != null) Pipe(
-                shape,
-                it
-            ) else null
-        }
+): List<Pipe?> = getNeighborsAroundPosition(position).map {
+    getShapeFromPosition(it, fieldMatrix).let { shape ->
+        if (shape != null) Pipe(
+            shape,
+            it
+        ) else null
     }
 }
-
-fun createPlayingFieldMatrix(input: List<String>): List<List<Char>> = input.map { it.toList() }
 
 fun findStartingPointPosition(playingField: List<List<Char>>): Pair<Int, Int> {
     playingField.forEachIndexed { index, chars ->
@@ -240,5 +230,6 @@ sealed interface Shape {
         }
     }
 }
+
 fun getFarthestPoint(totalDistance: Int) =
     totalDistance / 2
